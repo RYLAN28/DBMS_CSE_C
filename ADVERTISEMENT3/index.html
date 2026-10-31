@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ADWISE® | PostgreSQL Advertising Management Engine</title>
+  <meta name="description" content="Ultra-modern PostgreSQL advertising library featuring 3D carousel, full CRUD (insert, update, delete, search), PL/pgSQL stored functions, triggers, and audit logs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Custom Fluid Cursor Follower -->
+  <div class="cur" id="cur">OPEN AD</div>
+
+  <!-- Main Navigation Bar -->
+  <nav class="nav">
+    <div class="logo-group">
+      <a class="logo" href="#" id="brand-link">
+        ADWISE®
+        <small>Advertising Management System®<br>PostgreSQL Engine</small>
+      </a>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#" class="on" id="nav-library">Library<sup>(Ads)</sup></a></li>
+      <li><a href="#" id="nav-insert">+ Insert Ad</a></li>
+      <li><a href="#" id="nav-advertiser">+ Advertiser</a></li>
+      <li><a href="#" id="nav-campaigns">Campaigns<sup>(Projects)</sup></a></li>
+      <li><a href="#" id="nav-sql">SQL Engine<sup>(Func &amp; Logs)</sup></a></li>
+      <li><a href="#" id="nav-reports">Reports &amp; Stats</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <button class="db-pill" id="btn-db-status" title="PostgreSQL Connection Status">
+        <span class="db-dot" id="db-indicator"></span>
+        <span id="db-status-text">Checking DB...</span>
+      </button>
+
+      <!-- Interactive Theme Palette Selector (Matching User Palette Spec) -->
+      <div class="palette-dropdown" id="palette-dropdown">
+        <button class="palette-btn" id="btn-palette" aria-haspopup="true" aria-expanded="false" title="Change Theme Palette">
+          <i class="palette-swatch-cur" id="active-swatch" style="--sw: linear-gradient(90deg, #8C2A18, #E0501E, #FFA02E, #FFE2B0)"></i>
+          <span id="active-theme-label">Phosphor</span>
+          <span class="chev">▾</span>
+        </button>
+        <div class="palette-menu" id="palette-menu" hidden>
+          <div class="palette-menu-header">Change Theme Palette</div>
+          <button class="palette-item on" data-theme-id="phosphore">
+            <i class="swatch" style="--sw: linear-gradient(90deg, #8C2A18, #E0501E, #FFA02E, #FFE2B0)"></i>
+            <div class="palette-meta">
+              <span class="p-name">Phosphor</span>
+              <span class="p-desc">Retro Amber &amp; Rust</span>
+            </div>
+          </button>
+          <button class="palette-item" data-theme-id="acidule">
+            <i class="swatch" style="--sw: linear-gradient(90deg, #0B5A66, #82BA88, #FAA4B5, #FFF183)"></i>
+            <div class="palette-meta">
+              <span class="p-name">Candy / Acidulé</span>
+              <span class="p-desc">Teal, Rose &amp; Cream</span>
+            </div>
+          </button>
+          <button class="palette-item" data-theme-id="sorbet">
+            <i class="swatch" style="--sw: linear-gradient(90deg, #832758, #70C1E1, #F8B77C, #FAF4C1)"></i>
+            <div class="palette-meta">
+              <span class="p-name">Sorbet</span>
+              <span class="p-desc">Plum, Cyan &amp; Peach</span>
+            </div>
+          </button>
+          <button class="palette-item" data-theme-id="lagon">
+            <i class="swatch" style="--sw: linear-gradient(90deg, #0B5A66, #398847, #70C1E1, #FFF183)"></i>
+            <div class="palette-meta">
+              <span class="p-name">Lagoon / Lagon</span>
+              <span class="p-desc">Emerald &amp; Deep Azure</span>
+            </div>
+          </button>
+          <button class="palette-item" data-theme-id="guimauve">
+            <i class="swatch" style="--sw: linear-gradient(90deg, #2B5E10, #C85C88, #FFF183, #FDF9D0)"></i>
+            <div class="palette-meta">
+              <span class="p-name">Marshmallow</span>
+              <span class="p-desc">Wine &amp; Forest Rose</span>
+            </div>
+          </button>
+          <button class="palette-item" data-theme-id="neon">
+            <i class="swatch" style="--sw: linear-gradient(90deg, #803705, #0B96AF, #82BA88, #FAA4B5)"></i>
+            <div class="palette-meta">
+              <span class="p-name">Neon Cyber</span>
+              <span class="p-desc">Ochre, Mint &amp; Cyan</span>
+            </div>
+          </button>
+          <button class="palette-item" data-theme-id="obsidian">
+            <i class="swatch" style="--sw: linear-gradient(90deg, #1e1b4b, #4338ca, #6366f1, #38bdf8)"></i>
+            <div class="palette-meta">
+              <span class="p-name">Obsidian Electric</span>
+              <span class="p-desc">Titanium &amp; Violet</span>
+            </div>
+          </button>
+          <button class="palette-item" data-theme-id="minimal-light">
+            <i class="swatch" style="--sw: linear-gradient(90deg, #cbd5e1, #94a3b8, #475569, #0f172a)"></i>
+            <div class="palette-meta">
+              <span class="p-name">Porcelain Light</span>
+              <span class="p-desc">Clean Warm Slate</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dual Mode Switcher (Wheel vs List) -->
+  <div class="switch">
+    <button type="button" id="bw" class="on" aria-pressed="true">Wheel</button>
+    <button type="button" id="bl" aria-pressed="false">List</button>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="search-bar" id="search-bar">
+    <div class="search-input-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="filter-search" placeholder="SEARCH ADS, ADVERTISERS, PLATFORMS..." autocomplete="off" spellcheck="false">
+      <button type="button" id="search-clear" class="search-clear" title="Clear search">×</button>
+    </div>
+
+    <div class="filter-chips" id="filter-chips">
+      <button class="chip on" data-filter="all">ALL</button>
+      <button class="chip" data-filter="Digital">DIGITAL</button>
+      <button class="chip" data-filter="TV">TV</button>
+      <button class="chip" data-filter="Newspaper">NEWSPAPER</button>
+      <span class="chip-sep">|</span>
+      <button class="chip" data-status="all">ALL STATUS</button>
+      <button class="chip" data-status="Active">ACTIVE</button>
+      <button class="chip" data-status="Paused">PAUSED</button>
+      <button class="chip" data-status="Completed">COMPLETED</button>
+    </div>
+
+    <div class="sort-wrap">
+      <label for="sort-select">SORT:</label>
+      <select id="sort-select">
+        <option value="id-asc">ID (ASC)</option>
+        <option value="id-desc">ID (DESC)</option>
+        <option value="budget-desc">BUDGET (HIGH-LOW)</option>
+        <option value="budget-asc">BUDGET (LOW-HIGH)</option>
+        <option value="days-asc">EXPIRING SOON</option>
+        <option value="title-asc">TITLE (A-Z)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Dynamic Typography Header -->
+  <header class="head" id="head">
+    <div class="n ov"><span id="hn">01</span></div>
+    <div class="t" id="ht" title="Click to view details">
+      <span class="ov"><span>LOADING...</span></span>
+      <span class="ov"><span>CONNECTING TO POSTGRESQL</span></span>
+    </div>
+    <div class="y ov"><span id="hy">₹ 0</span></div>
+  </header>
+
+  <!-- 3D Interactive Carousel Wheel -->
+  <main id="wheel" role="region" aria-label="Advertisements 3D Carousel"></main>
+
+  <!-- Editorial List View -->
+  <section id="list" role="region" aria-label="Advertisements List View">
+    <div class="list-head">
+      <span>#</span>
+      <span>ID</span>
+      <span>ADVERTISEMENT TITLE</span>
+      <span>ADVERTISER &amp; PLATFORM</span>
+      <span>TYPE</span>
+      <span>BUDGET</span>
+      <span>DAYS LEFT</span>
+      <span>PAYMENT</span>
+      <span>STATUS</span>
+      <span>ACTIONS</span>
+    </div>
+    <div id="list-items"></div>
+    <div class="list-empty" id="list-empty" style="display:none;">
+      <h3>NO ADVERTISEMENTS FOUND</h3>
+      <p>Try adjusting your search query or filter tags, or insert a new ad.</p>
+      <button class="btn btn-outline" id="btn-empty-insert">+ Insert Advertisement</button>
+    </div>
+  </section>
+
+  <!-- Infinite project-style campaign view -->
+  <section id="campaign-view" aria-label="Campaign projects">
+    <div class="campaign-shell">
+      <header class="campaign-hero">
+        <div>
+          <span class="campaign-kicker">DATABASE PROJECTS · CAMPAIGN WORKSPACE</span>
+          <h1>Campaigns<span class="accent-dot">.</span></h1>
+          <p>Scroll through every PostgreSQL campaign. Select a project to inspect its connected advertisements.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-create-campaign">+ CREATE CAMPAIGN</button>
+      </header>
+      <div class="campaign-content">
+        <div class="campaign-rail-wrap">
+          <div class="campaign-rail-label">PROJECT INDEX <span id="campaign-count">0 CAMPAIGNS</span></div>
+          <div class="campaign-rail" id="campaign-rail"></div>
+        </div>
+        <aside class="campaign-detail" id="campaign-detail">
+          <span class="campaign-kicker">SELECTED PROJECT</span>
+          <div class="campaign-detail-number" id="campaign-detail-number">01</div>
+          <h2 id="campaign-detail-name">Loading campaigns...</h2>
+          <p id="campaign-detail-meta">Connect PostgreSQL to load project details.</p>
+          <div class="campaign-detail-stats">
+            <div><span>CONNECTED ADS</span><strong id="campaign-detail-ads">0</strong></div>
+            <div><span>COMBINED BUDGET</span><strong id="campaign-detail-budget">₹ 0</strong></div>
+          </div>
+          <div class="campaign-ad-list" id="campaign-detail-list"></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Hover Preview Thumbnail (List mode) -->
+  <aside id="prev" aria-hidden="true">
+    <div class="prev-preview-card">
+      <div class="prev-card-top">
+        <span class="badge" id="prev-badge">DIGITAL</span>
+        <span class="prev-id" id="prev-id">#101</span>
+      </div>
+      <div class="prev-card-center">
+        <h3 class="prev-title" id="prev-title">Summer Collection</h3>
+        <p class="prev-advertiser" id="prev-advertiser">Aria Kapoor · Instagram</p>
+      </div>
+      <div class="prev-card-bottom">
+        <div>
+          <span class="prev-label">BUDGET</span>
+          <strong class="prev-budget" id="prev-budget">₹ 42,000</strong>
+        </div>
+        <div>
+          <span class="prev-label">STATUS</span>
+          <span class="badge badge-active" id="prev-status">ACTIVE</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Footer Info Bar -->
+  <footer class="foot">
+    <div class="foot-left">
+      <span class="foot-tag">SQL ENGINE: <strong id="foot-db">POSTGRESQL</strong></span>
+      <span class="foot-tag" id="foot-count">0 ADS LOADED</span>
+    </div>
+    <div class="foot-right">
+      <span id="hint">SCROLL / DRAG / PRESS ARROW KEYS</span>
+    </div>
+  </footer>
+
+  <!-- Modal Backdrop for Slide-in Panel and Dialogs -->
+  <div class="bg" id="bg"></div>
+
+  <!-- Slide-in Editorial Detail Panel -->
+  <section class="panel" id="panel" aria-labelledby="pt">
+    <div class="panel-col panel-left">
+      <div class="pn" id="pn">01</div>
+      <div class="pd" id="pd">(30 DAYS)</div>
+      <div class="panel-badges">
+        <span class="badge" id="panel-type-badge">DIGITAL</span>
+        <span class="badge" id="panel-status-badge">ACTIVE</span>
+        <span class="badge" id="panel-pay-badge">UNPAID</span>
+      </div>
+    </div>
+
+    <div class="panel-col panel-center">
+      <div class="pv" id="pv"></div>
+      <div class="pa" id="pa">ADVERTISER · PLATFORM</div>
+      <h2 class="pt" id="pt">ADVERTISEMENT TITLE</h2>
+      <p class="px" id="px">Description text goes here.</p>
+
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <label>BASE BUDGET</label>
+          <strong id="m-budget">₹ 0</strong>
+        </div>
+        <div class="metric-box">
+          <label>GST TAX (18%)</label>
+          <strong id="m-tax">₹ 0</strong>
+        </div>
+        <div class="metric-box highlight">
+          <label>TOTAL COST (1.18×)</label>
+          <strong id="m-total">₹ 0</strong>
+        </div>
+        <div class="metric-box">
+          <label>PAID AMOUNT</label>
+          <strong id="m-paid">₹ 0</strong>
+        </div>
+        <div class="metric-box">
+          <label>TARGET AUDIENCE</label>
+          <strong id="m-audience">ALL</strong>
+        </div>
+        <div class="metric-box">
+          <label>TIMELINE</label>
+          <strong id="m-timeline">-</strong>
+        </div>
+      </div>
+
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btn-panel-update">✎ UPDATE AD</button>
+        <button class="btn btn-outline" id="btn-panel-pay">₹ RECORD PAYMENT</button>
+        <button class="btn btn-danger" id="btn-panel-delete">✕ DELETE AD</button>
+      </div>
+
+      <div class="panel-footer-meta">
+        <span>AD ID: <strong id="m-id">-</strong></span>
+        <span>LAST UPDATED: <strong id="m-updated">-</strong></span>
+      </div>
+    </div>
+
+    <div class="panel-col panel-right">
+      <div class="py" id="py">₹ 0</div>
+      <div class="panel-tax-note">Includes 18% statutory GST calculation per SQL query view</div>
+    </div>
+  </section>
+
+  <!-- Panel Close Button -->
+  <button class="x" id="x" aria-label="Close detail panel">✕ CLOSE</button>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: INSERT NEW ADVERTISEMENT (INSERT)              -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-insert" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub">DML OPERATION · POSTGRESQL INSERT</span>
+          <h2>NEW ADVERTISEMENT</h2>
+        </div>
+
+        <button type="button" class="modal-close" data-close="modal-insert">✕</button>
+      </div>
+
+      <form id="form-insert" class="modal-form">
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="ins-title">TITLE *</label>
+            <input type="text" id="ins-title" name="title" required maxlength="60" placeholder="e.g. Summer Festival Campaign">
+          </div>
+          <div class="form-group flex-1">
+            <label for="ins-budget">BUDGET (₹) *</label>
+            <input type="number" id="ins-budget" name="budget" required min="100" step="50" placeholder="e.g. 45000">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="ins-desc">DESCRIPTION</label>
+          <textarea id="ins-desc" name="description" rows="2" maxlength="150" placeholder="Targeted promotional campaign highlighting seasonal products..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="ins-type">AD TYPE *</label>
+            <select id="ins-type" name="ad_type">
+              <option value="Digital">Digital</option>
+              <option value="TV">TV</option>
+              <option value="Newspaper">Newspaper</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="ins-audience">AUDIENCE</label>
+            <input type="text" id="ins-audience" name="audience" maxlength="40" placeholder="e.g. Youth, Tech Enthusiasts, All">
+          </div>
+          <div class="form-group flex-1">
+            <label for="ins-days">DURATION (DAYS) *</label>
+            <input type="number" id="ins-days" name="days" required min="1" max="365" value="30">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="ins-advertiser">ADVERTISER (FROM DB) *</label>
+            <select id="ins-advertiser" name="advertiser_id" required>
+              <option value="1">1 · Aria Kapoor</option>
+              <option value="2">2 · Rohan Verma</option>
+              <option value="3">3 · Nisha Shah</option>
+              <option value="4">4 · Karan Mehta</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="ins-platform">PLATFORM (FROM DB) *</label>
+            <select id="ins-platform" name="platform_id" required>
+              <option value="1">1 · Instagram</option>
+              <option value="2">2 · YouTube</option>
+              <option value="3">3 · Google Ads</option>
+              <option value="4">4 · Newspaper</option>
+              <option value="5">5 · Star TV</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="ins-status">INITIAL STATUS</label>
+            <select id="ins-status" name="status">
+              <option value="Active">Active</option>
+              <option value="Draft">Draft</option>
+              <option value="Paused">Paused</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close="modal-insert">CANCEL</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-insert">INSERT INTO DATABASE ↗</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: INSERT NEW ADVERTISER (INSERT)                 -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-advertiser" hidden>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub">DML OPERATION · POSTGRESQL INSERT</span>
+          <h2>NEW ADVERTISER</h2>
+        </div>
+        <button type="button" class="modal-close" data-close="modal-advertiser">✕</button>
+      </div>
+
+      <form id="form-advertiser" class="modal-form">
+        <div class="form-group">
+          <label for="advertiser-name">NAME *</label>
+          <input type="text" id="advertiser-name" name="name" required maxlength="50" placeholder="e.g. Priya Sharma">
+        </div>
+        <div class="form-group">
+          <label for="advertiser-email">EMAIL</label>
+          <input type="email" id="advertiser-email" name="email" maxlength="80" placeholder="e.g. priya@example.com">
+        </div>
+        <div class="form-group">
+          <label for="advertiser-phone">PHONE</label>
+          <input type="tel" id="advertiser-phone" name="phone" maxlength="15" placeholder="e.g. 9876500005">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close="modal-advertiser">CANCEL</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-advertiser">INSERT ADVERTISER ↗</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: CREATE CAMPAIGN (INSERT + campaign_ad links)  -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-campaign" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub">DML OPERATION · POSTGRESQL INSERT</span>
+          <h2>NEW CAMPAIGN</h2>
+        </div>
+        <button type="button" class="modal-close" data-close="modal-campaign">✕</button>
+      </div>
+      <form id="form-campaign" class="modal-form">
+        <div class="form-group">
+          <label for="campaign-name">CAMPAIGN NAME *</label>
+          <input type="text" id="campaign-name" name="name" required maxlength="60" placeholder="e.g. Winter Stories">
+        </div>
+        <div class="form-group">
+          <label for="campaign-ads">CONNECT ADVERTISEMENTS</label>
+          <select id="campaign-ads" name="ad_ids" multiple size="5"></select>
+          <span class="form-help">Hold Ctrl/Cmd to select multiple advertisements.</span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close="modal-campaign">CANCEL</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-campaign">SAVE TO POSTGRESQL ↗</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: UPDATE ADVERTISEMENT (UPDATE)                  -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-update" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub">DML OPERATION · POSTGRESQL UPDATE &amp; TRIGGER AUDIT</span>
+          <h2>UPDATE ADVERTISEMENT <span id="upd-id-badge">#101</span></h2>
+        </div>
+        <button type="button" class="modal-close" data-close="modal-update">✕</button>
+      </div>
+
+      <form id="form-update" class="modal-form">
+        <input type="hidden" id="upd-id" name="id">
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="upd-title">TITLE *</label>
+            <input type="text" id="upd-title" name="title" required maxlength="60">
+          </div>
+          <div class="form-group flex-1">
+            <label for="upd-budget">BUDGET (₹) *</label>
+            <input type="number" id="upd-budget" name="budget" required min="100" step="50">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="upd-desc">DESCRIPTION</label>
+          <textarea id="upd-desc" name="description" rows="2" maxlength="150"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="upd-status">STATUS * (FIRES STATUS TRIGGER)</label>
+            <select id="upd-status" name="status">
+              <option value="Active">Active</option>
+              <option value="Paused">Paused</option>
+              <option value="Completed">Completed</option>
+              <option value="Draft">Draft</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="upd-type">AD TYPE</label>
+            <select id="upd-type" name="ad_type">
+              <option value="Digital">Digital</option>
+              <option value="TV">TV</option>
+              <option value="Newspaper">Newspaper</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label for="upd-audience">AUDIENCE</label>
+            <input type="text" id="upd-audience" name="audience" maxlength="40">
+          </div>
+        </div>
+
+        <div class="trigger-note">
+          ⚡ <strong>PostgreSQL Trigger Info:</strong> Changing the status will execute <code>log_ad_status_change()</code> and record an immutable row in <code>ad_update_log</code> table with timestamp and old/new states.
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close="modal-update">CANCEL</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-update">SAVE CHANGES (UPDATE) ↗</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: DELETE CONFIRMATION (DELETE)                   -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-delete" hidden>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub text-danger">DML OPERATION · POSTGRESQL DELETE</span>
+          <h2>CONFIRM DELETE</h2>
+        </div>
+        <button type="button" class="modal-close" data-close="modal-delete">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p>Are you sure you want to permanently delete advertisement <strong id="del-title">Title</strong> (<span id="del-id">#101</span>)?</p>
+        <p class="text-mute small">This will execute a safe cascading transaction in PostgreSQL removing associated campaign links and payment records.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close="modal-delete">CANCEL</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-delete">PERMANENTLY DELETE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: TRANSACTIONAL PAYMENT (BEGIN / COMMIT)         -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-pay" hidden>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub">TCL TRANSACTION · COMMIT &amp; ROLLBACK</span>
+          <h2>RECORD PAYMENT</h2>
+        </div>
+        <button type="button" class="modal-close" data-close="modal-pay">✕</button>
+      </div>
+
+      <form id="form-pay" class="modal-form">
+        <input type="hidden" id="pay-ad-id" name="ad_id">
+        <div class="form-group">
+          <label>ADVERTISEMENT</label>
+          <div id="pay-ad-name" class="static-pill">-</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="pay-amount">AMOUNT (₹) *</label>
+            <input type="number" id="pay-amount" name="amount" required min="1" step="10">
+          </div>
+          <div class="form-group flex-1">
+            <label for="pay-method">PAYMENT METHOD</label>
+            <select id="pay-method" name="method">
+              <option value="UPI">UPI</option>
+              <option value="Card">Card</option>
+              <option value="NetBanking">NetBanking</option>
+              <option value="Cash">Cash</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="trigger-note">
+          💳 Executed through Java JDBC with <code>con.setAutoCommit(false)</code> and committed via <code>con.commit()</code>.
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close="modal-pay">CANCEL</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-pay">COMMIT PAYMENT ↗</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: SQL FUNCTIONS, TRIGGERS & AUDIT LOGS           -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-sql" hidden>
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub">POSTGRESQL PL/PGSQL FUNCTIONS &amp; TRIGGER AUDIT</span>
+          <h2>SQL ENGINE CONTROLS</h2>
+        </div>
+        <button type="button" class="modal-close" data-close="modal-sql">✕</button>
+      </div>
+
+      <div class="sql-tabs">
+        <button class="sql-tab on" data-tab="tab-fn">1. Stored Function (expire_old_ads)</button>
+        <button class="sql-tab" data-tab="tab-logs">2. Trigger Audit Log (ad_update_log)</button>
+        <button class="sql-tab" data-tab="tab-views">3. PostgreSQL Views (ad_dashboard &amp; ad_report)</button>
+      </div>
+
+      <!-- Tab 1: Stored Function -->
+      <div class="tab-content" id="tab-fn">
+        <div class="sql-box">
+          <div class="sql-code-header">
+            <span>PL/pgSQL FUNCTION: <strong>expire_old_ads()</strong></span>
+            <span class="sql-status">RETURNS INTEGER</span>
+          </div>
+          <pre class="sql-code"><code>CREATE OR REPLACE FUNCTION expire_old_ads()
+RETURNS INTEGER LANGUAGE plpgsql AS $$
+DECLARE expired_count INTEGER;
+BEGIN
+    UPDATE advertisement
+    SET status = 'Completed'
+    WHERE end_date &lt; CURRENT_DATE AND status IS DISTINCT FROM 'Completed';
+
+    GET DIAGNOSTICS expired_count = ROW_COUNT;
+    RETURN expired_count;
+END;
+$$;</code></pre>
+          <div class="sql-action-row">
+            <button class="btn btn-primary" id="btn-run-expire">⚡ EXECUTE FUNCTION: expire_old_ads()</button>
+            <div id="expire-result" class="sql-result-pill">Ready to execute</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Trigger Audit Log -->
+      <div class="tab-content" id="tab-logs" style="display:none;">
+        <div class="sql-box">
+          <div class="sql-code-header">
+            <span>TRIGGER: <strong>advertisement_status_update</strong> → TABLE: <strong>ad_update_log</strong></span>
+            <button class="btn btn-outline btn-sm" id="btn-refresh-logs">↻ REFRESH AUDIT LOG</button>
+          </div>
+          <div class="table-scroll">
+            <table class="sql-table" id="table-logs">
+              <thead>
+                <tr>
+                  <th>LOG ID</th>
+                  <th>AD ID</th>
+                  <th>OLD STATUS</th>
+                  <th>NEW STATUS</th>
+                  <th>CHANGED AT (TIMESTAMP)</th>
+                </tr>
+              </thead>
+              <tbody id="logs-tbody">
+                <tr><td colspan="5" class="text-center">Loading audit log...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Views -->
+      <div class="tab-content" id="tab-views" style="display:none;">
+        <div class="sql-box">
+          <div class="sql-code-header">
+            <span>SQL VIEW: <strong>ad_report</strong> (Budget + 18% Tax = Total Cost)</span>
+            <button class="btn btn-outline btn-sm" id="btn-refresh-report">↻ REFRESH VIEW</button>
+          </div>
+          <div class="table-scroll">
+            <table class="sql-table" id="table-report">
+              <thead>
+                <tr>
+                  <th>AD ID</th>
+                  <th>TITLE</th>
+                  <th>ADVERTISER</th>
+                  <th>PLATFORM</th>
+                  <th>BASE BUDGET</th>
+                  <th>TOTAL COST (18% TAX)</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="report-tbody">
+                <tr><td colspan="7" class="text-center">Loading view data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close="modal-sql">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: AGGREGATE REPORTS & ANALYTICS                  -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-reports" hidden>
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub">POSTGRESQL AGGREGATES: COUNT, SUM, AVG, MIN, MAX</span>
+          <h2>REPORTS &amp; AGGREGATES</h2>
+        </div>
+        <button type="button" class="modal-close" data-close="modal-reports">✕</button>
+      </div>
+
+      <div class="stats-cards-grid">
+        <div class="stat-box">
+          <span class="stat-label">COUNT(*) TOTAL ADS</span>
+          <strong id="agg-count">0</strong>
+          <span class="stat-sub">Across all platforms</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">SUM(BUDGET) TOTAL SPEND</span>
+          <strong id="agg-sum">₹ 0</strong>
+          <span class="stat-sub">Combined campaign budget</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">AVG(BUDGET) MEAN AD SPEND</span>
+          <strong id="agg-avg">₹ 0</strong>
+          <span class="stat-sub">Average budget per ad</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">MIN &amp; MAX BUDGET</span>
+          <strong id="agg-range">₹ 0 - ₹ 0</strong>
+          <span class="stat-sub">Min to Max range</span>
+        </div>
+      </div>
+
+      <div class="breakdown-grid">
+        <div class="breakdown-box">
+          <h3>GROUP BY ad_type</h3>
+          <div class="table-scroll">
+            <table class="sql-table" id="table-by-type">
+              <thead><tr><th>AD TYPE</th><th>ADS COUNT</th><th>TOTAL BUDGET</th></tr></thead>
+              <tbody id="type-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="breakdown-box">
+          <h3>GROUP BY status</h3>
+          <div class="table-scroll">
+            <table class="sql-table" id="table-by-status">
+              <thead><tr><th>STATUS</th><th>ADS COUNT</th></tr></thead>
+              <tbody id="status-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close="modal-reports">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- MODAL: DATABASE CONNECTION SETTINGS                   -->
+  <!-- ===================================================== -->
+  <div class="modal-dialog" id="modal-db" hidden>
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <div>
+          <span class="modal-sub">PGADMIN / POSTGRESQL CONFIG</span>
+          <h2>DATABASE CONNECTION</h2>
+        </div>
+        <button type="button" class="modal-close" data-close="modal-db">✕</button>
+      </div>
+
+      <form id="form-db" class="modal-form">
+        <div class="form-group">
+          <label for="db-url">JDBC URL</label>
+          <input type="text" id="db-url" name="url" value="jdbc:postgresql://localhost:5432/AdvertisingManagementSystem">
+        </div>
+        <div class="form-group">
+          <label for="db-user">POSTGRES USER</label>
+          <input type="text" id="db-user" name="user" value="postgres">
+        </div>
+        <div class="form-group">
+          <label for="db-pass">POSTGRES PASSWORD</label>
+          <input type="password" id="db-pass" name="password" placeholder="Enter your pgAdmin password">
+        </div>
+
+        <div id="db-conn-result" class="conn-feedback">
+          Click "Test &amp; Connect" to verify live connection to pgAdmin.
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close="modal-db">CANCEL</button>
+          <button type="submit" class="btn btn-primary" id="btn-db-save">TEST &amp; CONNECT ↗</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Core JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
